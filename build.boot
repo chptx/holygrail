@@ -1,19 +1,20 @@
 (set-env!
  :source-paths   #{"src/cljs" "src/clj"}
  :resource-paths #{"resources"}
- :dependencies '[[adzerk/boot-cljs      "0.0-2814-4" :scope "test"]
-                 [adzerk/boot-reload    "0.2.6"      :scope "test"]
-                 [environ"1.0.0"]
-                 [danielsz/boot-environ "0.0.3"]
+ :dependencies '[[adzerk/boot-cljs      "1.7.170-3" :scope "test"]
+                 [adzerk/boot-reload    "0.4.2"      :scope "test"]
+		 [boot-deps "0.1.6" :scope "test"]
+                 [environ"1.0.1"]
+                 [danielsz/boot-environ "0.0.5"]
                  ; server
-                 [org.danielsz/system "0.1.8"]
+                 [org.danielsz/system "0.2.0"]
                  [ring/ring-defaults "0.1.5"]
                  [http-kit "2.1.19"]
-                 [compojure "1.3.4"]
-                 [org.clojure/tools.nrepl "0.2.10"]
+                 [compojure "1.4.0"]
+                 [org.clojure/tools.nrepl "0.2.12"]
                  ; client
-                 [org.omcljs/om "0.8.8" :exclusions [cljsjs/react]]
-                 [cljsjs/react "0.13.1-0"]])
+                 [org.omcljs/om "0.9.0" :exclusions [cljsjs/react]]
+                 [cljsjs/react "0.14.3-0"]])
 
 (require
  '[adzerk.boot-cljs      :refer [cljs]]
@@ -52,3 +53,14 @@
    (cljs :optimizations :advanced)
    (run :main-namespace "holy-grail.core" :arguments [#'prod-system])
    (wait)))
+
+(deftask build
+  "Builds an uberjar of this project that can be run with java -jar"
+  []
+  (comp
+   (aot :namespace '#{holy-grail.core})
+   (pom :project 'holyuber
+        :version "1.0.1")
+   (cljs :optimizations :advanced)
+   (uber)
+   (jar :main 'holy-grail.core)))

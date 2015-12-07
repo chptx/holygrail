@@ -10,6 +10,8 @@
 (defroutes app-routes
   (GET "/" [] (-> (resp/resource-response "index.html")
                   (resp/content-type "text/html")))
+  (POST "/action" [] (-> (resp/resource-response "index.html")
+                  (resp/content-type "text/html")))
   (route/not-found "Not Found"))
 
 (def middleware (-> site-defaults
